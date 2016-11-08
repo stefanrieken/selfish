@@ -22,22 +22,31 @@ public class ExpressionParser {
 	public static boolean parseExpressionList(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 
 		boolean done = false;
+		boolean precede = false;
 
-		int size = code.size();
+		Stack<Integer> expressionList = new Stack<>();
 
 		while(!done && rd.peek() != -1) {
-
-			boolean success = parseBracketed(rd, code, image, current);
-			if (!success) success = InvocationParser.parseInvocation(rd, code, image, current);
+			Stack<Integer> expression = new Stack<>();
+			boolean success = parseBracketed(rd, expression, image, current); // TODO brackets have a different code insertion order
+			if (!success) success = InvocationParser.parseInvocation(rd, expression, image, current);
 			done = !success;
 			
-			if (rd.peekNonWs() == ',') {
-				
+			if(precede) {
+				expression.addAll(expressionList);
+				expressionList = expression;
 			}
-			// TODO comma-separated
+			else expressionList.addAll(expression);
+				
+			if (rd.peekNonWs() == ',') {
+				rd.next();
+				precede = true;
+			} else precede = false;
 		}
 		
-		return code.size() > size;
+		code.addAll(expressionList);
+		
+		return expressionList.size() > 0;
 	}
 	
 	public static boolean parseBracketed(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {

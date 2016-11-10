@@ -17,7 +17,7 @@ public class InvocationParserTest {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
 		SelfishObject current = new SelfishObject(null, null);
-		InvocationParser.parseBinaryGroup(makeReader("a.b+c.d"), code, image, current);
+		InvocationParser.parseBinExpression(makeReader("a.b+c.d"), code, image, current);
 
 		// expecting it to prioritize dots over binary operators
 		assertEquals("[;, a, b, c, d, +]", image.names.toString());
@@ -29,7 +29,7 @@ public class InvocationParserTest {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
 		SelfishObject current = new SelfishObject(null, null);
-		InvocationParser.parseDotGroup(makeReader("a.b.c+e"), code, image, current);
+		InvocationParser.parseDotExpression(makeReader("a.b.c+e"), code, image, current);
 		
 		// expecting it not to parse beyond '+'
 		assertEquals("[;, a, b, c]", image.names.toString());

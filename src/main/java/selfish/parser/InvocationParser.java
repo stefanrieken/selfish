@@ -1,28 +1,23 @@
 package selfish.parser;
 
-import java.util.LinkedList;
 import java.util.Stack;
 
 import selfish.Association;
 import selfish.Image;
 import selfish.SelfishObject;
 
+/** TODO build in precedence, arglist */
 public class InvocationParser {
 
 	/* affects code */
-	public static boolean parseInvocation(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		return parseBinaryGroup(rd, code, image, current);
-	}
-
-	/* affects code */
-	public static boolean parseBinaryGroup(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+	public static boolean parseBinExpression(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 		Stack<Integer> lhs = new Stack<>();
-		boolean parsedSomething = parseDotGroup(rd, lhs, image, current);
+		boolean parsedSomething = parseDotExpression(rd, lhs, image, current);
 
 		String binaryName = SelfishLexer.readBinaryName(rd);
 		while (binaryName != null) {
 			Stack<Integer> rhs = new Stack<Integer>();
-			boolean parsedDotGroup = parseDotGroup(rd, rhs, image, current);
+			boolean parsedDotGroup = parseDotExpression(rd, rhs, image, current);
 			if (!parsedDotGroup)
 				throw new RuntimeException("Expected right hand side of binary expression");
 
@@ -37,10 +32,11 @@ public class InvocationParser {
 
 		return parsedSomething;
 	}
-	
+
 	/* affects code */
-	public static boolean parseDotGroup(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		Association assoc = AssociationParser.parseAssociation(rd, code, image, current);
+	public static boolean parseDotExpression(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+		// TODO parse precedence (see Selfish.g)
+		Association assoc = DefinitionParser.parseMention(rd, code, image, current);
 		if (assoc == null) return false;
 
 		while (rd.peek() == '.') {

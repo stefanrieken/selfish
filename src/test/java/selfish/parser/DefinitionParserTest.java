@@ -28,7 +28,7 @@ public class DefinitionParserTest {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
 		SelfishObject current = new SelfishObject(null, null);
-		SelfishObject result = DefinitionParser.parseDefinitionValue(makeReader("42"), code, image, current);
+		SelfishObject result = DefinitionParser.parseStaticDef(makeReader(": 42"), code, image, current);
 		assertEquals("42", result.toString());
 	}
 
@@ -47,7 +47,7 @@ public class DefinitionParserTest {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
 		SelfishObject current = new SelfishObject(null, null);
-		Association result = DefinitionParser.parseNameOrDefinition(makeReader("@{}value:42"), code, image, current);
+		Association result = DefinitionParser.parseMention(makeReader("@{}value:42"), code, image, current);
 		assertEquals("[]", result.attr.toString()); // TODO of course code should be empty here
 		assertEquals("42", result.value.toString());
 	}

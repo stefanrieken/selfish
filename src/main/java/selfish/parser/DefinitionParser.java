@@ -8,34 +8,36 @@ import selfish.SelfishObject;
 
 public class DefinitionParser {
 
-	public static Association parseNameOrDefinition(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+	/**
+	 *  A 'mention' is either a definition or a reference.
+	 * It is only known to be a reference when only a name
+	 * is parsed, and that name already exists.
+	 */
+	public static Association parseMention(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 		SelfishObject attr = parseAttribute(rd, code, image, current);
-		
-		String name = SelfishLexer.readName(rd);
-		if (name == null) name = SelfishLexer.readBinaryName(rd);
-		if (name == null) {
-			if (attr != null) throw new RuntimeException("Expected name");
-			return null; // no syntax error, just nothing parsed up to this point, so it's no definition
+
+		Association assoc = parseNamedDef(rd, code, image, current, attr);
+		if (assoc == null) {
+			SelfishObject value = LiteralParser.parseLiteral(rd, code, image, current);
+			if (value != null) {
+				assoc = new Association(attr, value);
+				current.assocs.put(image.names.add(""), assoc);
+			}
 		}
 
-		SelfishObject value = null;
-		if(rd.peek() == ':') {
-			rd.next();
-			value = parseDefinitionValue(rd, code, image, current);
+		if (assoc == null) {
+			if (attr == null) return null; // nothing parsed
+			else throw new RuntimeException("Expected named def or literal");
 		}
+		
+		// TODO implicit-self-based invocation
+		// Stack<Integer> args = InvocationParser.parseArgList();
 
-		Association result = null;
-		if (attr == null && value == null && name != null) {
-			result = current.assocs.get(name);
+		if (attr != null) {
+			assoc.attr = attr;
 		}
 		
-		if (result == null && name != null) {
-			result = new Association(attr, value);
-			current.assocs.put(name, new Association(attr, value));
-		}
-		
-		code.push(image.names.add(name));
-		return result;
+		return assoc;
 	}
 
 	public static SelfishObject parseAttribute(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
@@ -44,9 +46,41 @@ public class DefinitionParser {
 		return LiteralParser.parseBlock(rd, code, image, current);
 	}
 
-	public static SelfishObject parseDefinitionValue(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+	/* affects current, code */
+	public static Association parseNamedDef(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current, SelfishObject attr) {
+		String name = SelfishLexer.readName(rd);
+		if (name == null) name = SelfishLexer.readBinaryName(rd);
+		if (name == null) return null;
+
+		int number = image.names.add(name);
+
+		Association assoc = null;
+
+		SelfishObject value = parseStaticDef(rd, code, image, current);
+
+		if (value != null || attr != null) {
+			assoc = new Association(attr, value);
+			current.assocs.put(number, assoc);
+		} else { // neither value nor attr known, so could be new, could be reference
+			assoc = current.lookup(number);
+			if (assoc == null) {
+				assoc = new Association(null, null);
+				current.assocs.put(number, assoc);
+			}
+		}
+		
+		code.add(number);
+
+		return assoc;
+	}
+	
+	public static SelfishObject parseStaticDef(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+		if (rd.peek() != ':') return null;
+		rd.next();
+		
 		SelfishObject obj = parseLinkReference(rd, code, image, current);
-		if (obj == null) obj= LiteralParser.parseLiteral(rd, code, image, current);
+		if (obj == null) obj = LiteralParser.parseLiteral(rd, code, image, current);
+		
 		return obj;
 	}
 

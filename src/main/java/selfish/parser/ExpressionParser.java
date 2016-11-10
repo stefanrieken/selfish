@@ -28,9 +28,7 @@ public class ExpressionParser {
 
 		while(!done && rd.peek() != -1) {
 			Stack<Integer> expression = new Stack<>();
-			boolean success = parseBracketed(rd, expression, image, current); // TODO brackets have a different code insertion order
-			if (!success) success = InvocationParser.parseInvocation(rd, expression, image, current);
-			done = !success;
+			done = !InvocationParser.parseBinExpression(rd, expression, image, current);
 			
 			if(precede) {
 				expression.addAll(expressionList);
@@ -47,18 +45,5 @@ public class ExpressionParser {
 		code.addAll(expressionList);
 		
 		return expressionList.size() > 0;
-	}
-	
-	public static boolean parseBracketed(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		if (rd.peek() != '(') return false;
-		rd.next();
-		
-		while(rd.peek() != ')') {
-			if(!parseExpressionList(rd, code, image, current))
-				throw new RuntimeException("Expected expressionlist");
-		}
-		rd.next();
-		
-		return true;
 	}
 }

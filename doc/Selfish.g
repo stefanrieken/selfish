@@ -18,16 +18,16 @@ binExpression	: dotExpression ({binInvocation}? binInvocation)* ;
 binInvocation	: BNAME dotExpression ;
 
 dotExpression	: (precedence|mention ) ( dotInvocation )* ;
-dotInvocation	: '.' (BNAME|NAME)  {arglist}? arglist ; /* antlr3 specific syntax to direct ambiguity: if arglist follows, interpret as arglist */
+dotInvocation	: {'.'}? '.' (BNAME|NAME)  {arglist}? arglist ; /* antlr3 specific syntax to direct ambiguity: if arglist follows, interpret as arglist */
 
-arglist		: '(' expressionlist ')' ;
 precedence	: '(' expressionlist ')' ;
+arglist		: '(' expressionlist ')' ;
 
 
 /* Unit: DefinitionParser */
 
-mention		: (attr)? (namedDef|literal) {arglist}? arglist ;
-namedDef	: (NAME|BNAME) ( staticDef )? ; /* TODO allow context definition at start of expressionList : ".bla : {}" */
+mention		: (attr)? (namedDef|literal) {arglist}? arglist ; /* arglist == implicit 'self'-based execution */
+namedDef	: ('.')? (NAME|BNAME) ( staticDef )? ; /* allow dot-based context definition at start of expressionList : ".bla : {}" */
 staticDef	: ':' linkReference | literal;
 linkReference	: ( '/' NAME )+ ;
 attr		: '@' (NAME | block);		/* manual note: only static definitions allowed in this particular block */

@@ -117,6 +117,7 @@ public class DefinitionParser {
 		SelfishObject obj = image.objects.get(0);
 
 		String name = SelfishLexer.readName(rd);
+		if (name == null) name = SelfishLexer.readBinaryName(rd);
 		if (name == null) return obj;
 
 		obj = obj.assocs.get(name).value;

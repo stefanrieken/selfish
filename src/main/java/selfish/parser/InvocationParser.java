@@ -35,19 +35,46 @@ public class InvocationParser {
 
 	/* affects code */
 	public static boolean parseDotExpression(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		// TODO parse precedence (see Selfish.g)
-		Association assoc = DefinitionParser.parseMention(rd, code, image, current);
-		if (assoc == null) return false;
+		Stack<Integer> dotExpr = new Stack<>();
+		Stack<Integer> precedence = parsePrecedence(rd,image,current);
+
+		if (precedence != null) {
+			dotExpr.addAll(precedence);
+		} else {
+			Association assoc = DefinitionParser.parseMention(rd, dotExpr, image, current);
+			if (assoc == null) return false;
+			// is already added to expr
+		}
 
 		while (rd.peek() == '.') {
 			rd.next();
 			String name = SelfishLexer.readName(rd);
 			if (name == null) name = SelfishLexer.readBinaryName(rd);
 			if (name == null) throw new RuntimeException("Expected name after dot");
-			code.add(-image.names.add(name));
+			dotExpr.add(-image.names.add(name));
+			
+			Stack<Integer> args = parseArglist(rd, image, current);
+			if (args != null) {
+				// prepend the args
+				args.addAll(dotExpr);
+				dotExpr = args;
+			}
 		}
-		
-		// TODO build up the code
+
+		code.addAll(dotExpr);
 		return true;
+	}
+
+	public static Stack<Integer> parsePrecedence(SelfishReader rd, Image image, SelfishObject current) {
+		if (rd.peek() != '(') return null;
+		rd.next();
+		Stack<Integer> result = new Stack<>();
+		ExpressionParser.parseExpressionList(rd, result, image, current);
+		if (!rd.read(')')) throw new RuntimeException("Expected ')'");
+		return result;
+	}
+
+	public static Stack<Integer> parseArglist(SelfishReader rd, Image image, SelfishObject current) {
+		return parsePrecedence(rd, image, current);
 	}
 }

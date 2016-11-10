@@ -8,7 +8,7 @@ start_rule	: code;
 /* Unit: ExpressionParser */
 
 code		: (expressionlist (';' expressionlist)*)? ;
-expressionlist	: expression ((',')? expression)* ; /* space separated causes dilemma: 'a (c*d);': arglist or precedence? */
+expressionlist	: expression ((',')? expression)* ; /* space separated causes dilemma: 'a (c*d);': arglist or precedence? (answer: prefer arglist. See further below) */
 expression	: binExpression;
 
 
@@ -18,7 +18,7 @@ binExpression	: dotExpression ({binInvocation}? binInvocation)* ;
 binInvocation	: BNAME dotExpression ;
 
 dotExpression	: (precedence|mention ) ( dotInvocation )* ;
-dotInvocation	: '.' (BNAME|NAME)  {arglist}? arglist ;
+dotInvocation	: '.' (BNAME|NAME)  {arglist}? arglist ; /* antlr3 specific syntax to direct ambiguity: if arglist follows, interpret as arglist */
 
 arglist		: '(' expressionlist ')' ;
 precedence	: '(' expressionlist ')' ;

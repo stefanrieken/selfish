@@ -45,7 +45,20 @@ public class DefinitionParser {
 	public static SelfishObject parseAttribute(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 		if (rd.peekNonWs() != '@') return null;
 		rd.next();
-		return LiteralParser.parseBlock(rd, code, image, current);
+		SelfishObject result = parseSingleAttribute(rd, code, image, current);
+		if (result == null) result = LiteralParser.parseBlock(rd, code, image, current);
+		
+		if (result == null) throw new ParseException("Expected attribute value", rd);
+		return result;
+	}
+	
+	private static SelfishObject parseSingleAttribute(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+		String name = SelfishLexer.readName(rd);
+		if (name == null) return null;
+		SelfishObject value = DefinitionParser.parseStaticDef(rd, code, image, current);
+		SelfishObject attr = image.newObject(null, null);
+		attr.assocs.put(image.names.add(name), new Association(null, value));
+		return attr;
 	}
 
 	/* affects current, code */

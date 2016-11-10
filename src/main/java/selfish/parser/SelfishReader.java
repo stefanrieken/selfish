@@ -8,6 +8,9 @@ public class SelfishReader {
 	private Reader reader;
 	
 	private Integer buffer;
+	
+	public int column=0;
+	public int line=1;
 
 	public SelfishReader(Reader reader) {
 		this.reader = reader;
@@ -34,7 +37,14 @@ public class SelfishReader {
 	
 	private int readNew() {
 		try {
-			return reader.read();
+			int ch = reader.read();
+			column++;
+			if (ch == '\n') {
+				column = 0;
+				line++;
+			}
+
+			return ch;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -57,6 +67,14 @@ public class SelfishReader {
 
 	public boolean read(char ch) {
 		if (peek() == ch) {
+			buffer = null;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean readNonWs(char ch) {
+		if (peekNonWs() == ch) {
 			buffer = null;
 			return true;
 		}

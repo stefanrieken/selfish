@@ -5,4 +5,4 @@ fib : {
   }
 };
 
-fib(10)
+self.fib(10)

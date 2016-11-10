@@ -19,7 +19,7 @@ public class InvocationParser {
 			Stack<Integer> rhs = new Stack<Integer>();
 			boolean parsedDotGroup = parseDotExpression(rd, rhs, image, current);
 			if (!parsedDotGroup)
-				throw new RuntimeException("Expected right hand side of binary expression");
+				throw new ParseException("Expected right hand side of binary expression", rd);
 
 			rhs.addAll(lhs);
 			rhs.add(-image.names.add(binaryName));
@@ -50,7 +50,7 @@ public class InvocationParser {
 			rd.next();
 			String name = SelfishLexer.readName(rd);
 			if (name == null) name = SelfishLexer.readBinaryName(rd);
-			if (name == null) throw new RuntimeException("Expected name after dot");
+			if (name == null) throw new ParseException("Expected name after dot", rd);
 			dotExpr.add(-image.names.add(name));
 			
 			Stack<Integer> args = parseArglist(rd, image, current);
@@ -70,7 +70,7 @@ public class InvocationParser {
 		rd.next();
 		Stack<Integer> result = new Stack<>();
 		ExpressionParser.parseExpressionList(rd, result, image, current);
-		if (!rd.read(')')) throw new RuntimeException("Expected ')'");
+		if (!rd.read(')')) throw new ParseException("Expected ')'", rd);
 		return result;
 	}
 

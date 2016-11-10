@@ -29,7 +29,7 @@ public class DefinitionParser {
 
 		if (assoc == null) {
 			if (attr == null) return null; // nothing parsed
-			else throw new RuntimeException("Expected named def or literal");
+			else throw new ParseException("Expected named def or literal", rd);
 		}
 		
 		// TODO implicit-self-based invocation
@@ -43,7 +43,7 @@ public class DefinitionParser {
 	}
 
 	public static SelfishObject parseAttribute(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		if (rd.peek() != '@') return null;
+		if (rd.peekNonWs() != '@') return null;
 		rd.next();
 		return LiteralParser.parseBlock(rd, code, image, current);
 	}
@@ -62,7 +62,7 @@ public class DefinitionParser {
 		String name = SelfishLexer.readName(rd);
 		if (name == null) name = SelfishLexer.readBinaryName(rd);
 		if (name == null) {
-			if (sign == -1) throw new RuntimeException("expected name");
+			if (sign == -1) throw new ParseException("expected name", rd);
 			return null;
 		}
 
@@ -89,7 +89,7 @@ public class DefinitionParser {
 	}
 	
 	public static SelfishObject parseStaticDef(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		if (rd.peek() != ':') return null;
+		if (rd.peekNonWs() != ':') return null;
 		rd.next();
 		
 		SelfishObject obj = parseLinkReference(rd, code, image, current);
@@ -99,7 +99,7 @@ public class DefinitionParser {
 	}
 
 	public static SelfishObject parseLinkReference(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		if (rd.peek() != '/') return null;
+		if (rd.peekNonWs() != '/') return null;
 		rd.next();
 		SelfishObject obj = image.objects.get(0);
 
@@ -111,7 +111,7 @@ public class DefinitionParser {
 		while (rd.peek() == '/') {
 			rd.next();
 			name = SelfishLexer.readName(rd);
-			if (name == null) throw new RuntimeException("Expected name");
+			if (name == null) throw new ParseException("Expected name", rd);
 			obj = obj.assocs.get(name).value;
 		}
 		

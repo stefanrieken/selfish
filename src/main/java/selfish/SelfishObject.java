@@ -10,9 +10,13 @@ public class SelfishObject {
 	public Type type;
 	public Object value;
 	
-	public SelfishObject(Type type, Object value) {
+	protected SelfishObject(Type type, Object value) {
 		this.type = type;
 		this.value = value;
+	}
+
+	public static SelfishObject temporal(Type type, Object value) {
+		return new SelfishObject(type, value);
 	}
 
 	public Association lookup(int number) {

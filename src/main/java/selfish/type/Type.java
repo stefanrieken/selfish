@@ -3,9 +3,10 @@ package selfish.type;
 import java.util.Stack;
 
 import selfish.Association;
+import selfish.Image;
 import selfish.SelfishObject;
 
 public interface Type {
 
-	public void invoke(Association meth, Association ctx, Stack<SelfishObject> stack);
+	public void invoke(Image image, Association meth, Association ctx, Stack<SelfishObject> stack);
 }

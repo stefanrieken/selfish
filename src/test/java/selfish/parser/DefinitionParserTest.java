@@ -18,7 +18,7 @@ public class DefinitionParserTest {
 	public void testParseAttribute() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		SelfishObject result = DefinitionParser.parseAttribute(makeReader("@{}"), code, image, current);
 		assertEquals("[]", result.toString());
 	}
@@ -27,7 +27,7 @@ public class DefinitionParserTest {
 	public void testParseDefinitionValue() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		SelfishObject result = DefinitionParser.parseStaticDef(makeReader(": 42"), code, image, current);
 		assertEquals("42", result.toString());
 	}
@@ -36,8 +36,8 @@ public class DefinitionParserTest {
 	public void testParseLinkReference() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		image.objects.add(new SelfishObject(StringType.instance, "root"));
-		SelfishObject current = new SelfishObject(null, null);
+		image.newObject(StringType.instance, "root");
+		SelfishObject current = image.newObject(null, null);
 		SelfishObject result = DefinitionParser.parseLinkReference(makeReader("/"), code, image, current);
 		assertEquals("root", result.toString());
 	}
@@ -46,7 +46,7 @@ public class DefinitionParserTest {
 	public void testParseDefinition() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		Association result = DefinitionParser.parseMention(makeReader("@{}value:42"), code, image, current);
 		assertEquals("[]", result.attr.toString()); // TODO should attr be of type SimpleObject (not Code)?
 		assertEquals("42", result.value.toString());
@@ -57,7 +57,7 @@ public class DefinitionParserTest {
 	public void testParseCtxDefinition() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		Association result = DefinitionParser.parseMention(makeReader("@{}.value:42"), code, image, current);
 		assertEquals("[]", result.attr.toString()); // TODO of course code should be empty here
 		assertEquals("42", result.value.toString());

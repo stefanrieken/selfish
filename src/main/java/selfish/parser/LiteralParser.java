@@ -21,24 +21,25 @@ public class LiteralParser {
 		if (rd.peek() != '{') return null;
 		rd.next();
 		
-		Stack<Integer> blockCode = new Stack<Integer>();
-		ExpressionParser.parseCode(rd, blockCode, image, current);
+		Stack<Integer> blockCode = new Stack<>();
+		SelfishObject codeBlock = image.newObject(BlockType.instance, blockCode);
+		ExpressionParser.parseCode(rd, blockCode, image, codeBlock);
 
-		if (!rd.read('}')) throw new RuntimeException("Expected '}'");
+		if (!rd.readNonWs('}')) throw new ParseException("Expected '}'", rd);
 	
-		return new SelfishObject(BlockType.instance, blockCode);
+		return codeBlock;
 	}
 	
 	public static SelfishObject parseNumber(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 		Integer number = SelfishLexer.readNumber(rd);
 		if (number == null) return null;
-		else return new SelfishObject(IntegerType.instance, number);
+		else return image.newObject(IntegerType.instance, number);
 	}
 
 	public static SelfishObject parseString(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 		String string = SelfishLexer.readString(rd);
 		if (string == null) return null;
-		else return new SelfishObject(IntegerType.instance, string);
+		else return image.newObject(IntegerType.instance, string);
 	}
 
 }

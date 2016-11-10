@@ -16,7 +16,7 @@ public class InvocationParserTest {
 	public void testParseBinaryGroup() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("a.b+c.d"), code, image, current);
 
 		// expecting it to prioritize dots over binary operators
@@ -28,7 +28,7 @@ public class InvocationParserTest {
 	public void testParseDotGroup() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseDotExpression(makeReader("a.b.c+e"), code, image, current);
 		
 		// expecting it not to parse beyond '+'
@@ -40,7 +40,7 @@ public class InvocationParserTest {
 	public void testParseArgs() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("a.b(c).d(e, f)"), code, image, current);
 		
 		// expecting it to produce 'f e c a .b .d'
@@ -52,7 +52,7 @@ public class InvocationParserTest {
 	public void testParsePrecedence() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("(a+b)*c"), code, image, current);
 		
 		// expecting it to produce 'c b a .+ .*
@@ -64,7 +64,7 @@ public class InvocationParserTest {
 	public void testParsePrecedence2() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("a+(b*c)"), code, image, current);
 		
 		// expecting it to produce c b .* a .+
@@ -76,7 +76,7 @@ public class InvocationParserTest {
 	public void testParsePrecedence3() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("(a.b).c(d)"), code, image, current);
 		
 		// expecting it to produce 'd a -b -c'
@@ -88,7 +88,7 @@ public class InvocationParserTest {
 	public void testParsePrecedence4() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("(a+b).c(d)"), code, image, current);
 		
 		// expecting it to produce 'd b a .+ .c'
@@ -100,7 +100,7 @@ public class InvocationParserTest {
 	public void testParsePrecedence5() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		InvocationParser.parseBinExpression(makeReader("(a.b) + c.d(e)"), code, image, current);
 		
 		// expecting it to produce 'e c .d a .b .+'

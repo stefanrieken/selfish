@@ -16,7 +16,7 @@ public class LiteralParserTest {
 	public void testParseString() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		SelfishObject result = LiteralParser.parseString(makeReader("\"bla\""), code, image, current);
 		
 		assertEquals("bla", result.toString());
@@ -26,7 +26,7 @@ public class LiteralParserTest {
 	public void testParseNumber() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		SelfishObject result = LiteralParser.parseNumber(makeReader("42"), code, image, current);
 		
 		assertEquals("42", result.toString());
@@ -36,7 +36,7 @@ public class LiteralParserTest {
 	public void testParseBlock() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		SelfishObject result = LiteralParser.parseBlock(makeReader("{a.b}"), code, image, current);
 		
 		assertEquals("[;, a, b]", image.names.toString());

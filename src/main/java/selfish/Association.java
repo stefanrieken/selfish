@@ -8,4 +8,9 @@ public class Association {
 		this.attr = attr;
 		this.value = value;
 	}
+	
+	public String toString() {
+		if (value == null) return "<null>";
+		return value.toString();
+	}
 }

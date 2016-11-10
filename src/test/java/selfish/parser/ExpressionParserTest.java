@@ -18,7 +18,7 @@ public class ExpressionParserTest {
 	public void testParseCode() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 
 		SelfishReader rd = new SelfishReader(new InputStreamReader(getClass().getResourceAsStream("/examples/fibonacci.selfish")));
 		ExpressionParser.parseCode(rd, code, image, current);
@@ -38,7 +38,7 @@ public class ExpressionParserTest {
 	public void testParseExpressionList() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		ExpressionParser.parseExpressionList(makeReader("a.b c.d"), code, image, current);
 		assertEquals("[;, a, b, c, d]", image.names.toString());
 		assertEquals("[1, -2, 3, -4]", code.toString());
@@ -48,7 +48,7 @@ public class ExpressionParserTest {
 	public void testParseCommaExpressionList() {
 		Stack<Integer> code = new Stack<>();
 		Image image = new Image();
-		SelfishObject current = new SelfishObject(null, null);
+		SelfishObject current = image.newObject(null, null);
 		ExpressionParser.parseExpressionList(makeReader("a.b, c.d"), code, image, current);
 		assertEquals("[;, a, b, c, d]", image.names.toString());
 		assertEquals("[3, -4, 1, -2]", code.toString());

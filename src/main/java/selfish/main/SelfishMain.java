@@ -25,10 +25,13 @@ public class SelfishMain {
 	public static Image load(String filename) {
 		try {
 			SelfishReader rd = new SelfishReader(new FileReader(filename));
-		
+
 			Stack<Integer> code = new Stack<>();
 			Image image = new Image();
-			SelfishObject root = new SelfishObject(BlockType.instance,code);
+
+			image.names.add("self"); // set at #1
+
+			SelfishObject root = image.newObject(BlockType.instance,code);
 			image.objects.add(root);
 			ExpressionParser.parseCode(rd, code, image, root);
 			
@@ -44,7 +47,7 @@ public class SelfishMain {
 
 		SelfishObject root = image.objects.get(0);
 		Association ctx = new Association(null, root);
-		root.type.invoke(ctx, ctx, stack);
+		root.type.invoke(image, ctx, ctx, stack);
 		
 		if (!stack.isEmpty() && stack.peek().type == IntegerType.instance) {
 			return (Integer) stack.peek().value;

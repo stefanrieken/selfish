@@ -48,8 +48,20 @@ public class DefinitionParserTest {
 		Image image = new Image();
 		SelfishObject current = new SelfishObject(null, null);
 		Association result = DefinitionParser.parseMention(makeReader("@{}value:42"), code, image, current);
+		assertEquals("[]", result.attr.toString()); // TODO should attr be of type SimpleObject (not Code)?
+		assertEquals("42", result.value.toString());
+		assertEquals("42", current.assocs.get(image.names.add("value")).value.toString());
+	}
+
+	@Test
+	public void testParseCtxDefinition() {
+		Stack<Integer> code = new Stack<Integer>();
+		Image image = new Image();
+		SelfishObject current = new SelfishObject(null, null);
+		Association result = DefinitionParser.parseMention(makeReader("@{}.value:42"), code, image, current);
 		assertEquals("[]", result.attr.toString()); // TODO of course code should be empty here
 		assertEquals("42", result.value.toString());
+		assertEquals("42", current.assocs.get(-image.names.add("value")).value.toString());
 	}
 
 	private SelfishReader makeReader(String input) {

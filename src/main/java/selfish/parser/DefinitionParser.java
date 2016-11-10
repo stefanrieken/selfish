@@ -48,9 +48,21 @@ public class DefinitionParser {
 
 	/* affects current, code */
 	public static Association parseNamedDef(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current, SelfishObject attr) {
+
+		int sign = 1;
+		/* This part will only give the expected outcome (a named definition of a context object) */
+		/* when other, more pressing interepretations, such as a dotInvocation, were considered before this one. */
+		if (rd.peek() == '.') {
+			rd.next();
+			sign = -1;
+		}
+
 		String name = SelfishLexer.readName(rd);
 		if (name == null) name = SelfishLexer.readBinaryName(rd);
-		if (name == null) return null;
+		if (name == null) {
+			if (sign == -1) throw new RuntimeException("expected name");
+			return null;
+		}
 
 		int number = image.names.add(name);
 
@@ -60,16 +72,16 @@ public class DefinitionParser {
 
 		if (value != null || attr != null) {
 			assoc = new Association(attr, value);
-			current.assocs.put(number, assoc);
+			current.assocs.put(sign * number, assoc);
 		} else { // neither value nor attr known, so could be new, could be reference
 			assoc = current.lookup(number);
 			if (assoc == null) {
 				assoc = new Association(null, null);
-				current.assocs.put(number, assoc);
+				current.assocs.put(sign * number, assoc);
 			}
 		}
 		
-		code.add(number);
+		code.add(number); // no sign here! this is a definition, not a dotInvocation
 
 		return assoc;
 	}

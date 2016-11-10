@@ -20,8 +20,10 @@ public class DefinitionParser {
 		if (assoc == null) {
 			SelfishObject value = LiteralParser.parseLiteral(rd, code, image, current);
 			if (value != null) {
+				int number = image.names.add("");
 				assoc = new Association(attr, value);
-				current.assocs.put(image.names.add(""), assoc);
+				current.assocs.put(number, assoc);
+				code.add(number);
 			}
 		}
 

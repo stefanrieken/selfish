@@ -9,16 +9,36 @@ public class ExpressionParser {
 	
 	public static boolean parseCode(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 		int size = code.size();
+		int startOfExpression = code.size();
 
 		while (parseExpressionList(rd, code, image, current) && rd.peek() == ';') {
-			code.push(0); // ';'
 			rd.next();
-			parseExpressionList(rd, code, image, current);
+			code.push(0); // ';'
+			
+			clearCodeOnlyContainingReferences(code, startOfExpression);
+			startOfExpression = code.size();
 		}
 
 		return code.size() > size;
 	}
 	
+	public static void clearCodeOnlyContainingReferences(Stack<Integer> code, int from) {
+		
+		boolean foundInvocation = false;
+		for (int i=from; i<code.size(); i++) {
+			if (code.get(i) < 0) {
+				foundInvocation = true;
+				break;
+			}
+		}
+		
+		if(!foundInvocation) {
+			while (code.size() > from) {
+				code.pop();
+			}
+		}
+	}
+
 	public static boolean parseExpressionList(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
 
 		boolean done = false;

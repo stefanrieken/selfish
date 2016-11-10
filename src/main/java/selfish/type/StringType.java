@@ -1,6 +1,6 @@
 package selfish.type;
 
-public class StringType implements Type {
+public class StringType extends ValueType {
 
 	public static StringType instance = new StringType();
 }

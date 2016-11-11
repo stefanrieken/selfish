@@ -90,7 +90,7 @@ public class DefinitionParser {
 			assoc = new Association(attr, value);
 			current.assocs.put(sign * number, assoc);
 		} else { // neither value nor attr known, so could be new, could be reference
-			assoc = current.lookup(number);
+			assoc = current.lookup(number, false);
 			if (assoc == null) {
 				assoc = new Association(null, null);
 				current.assocs.put(sign * number, assoc);
@@ -124,7 +124,7 @@ public class DefinitionParser {
 		if (name == null) return obj;
 
 		if (obj == null) obj = current;
-		Association assoc = obj.lookup(image.names.add(name));
+		Association assoc = obj.lookup(image.names.add(name), false);
 		if (assoc == null)
 			throw new ParseException("Object not found: " + name, rd);
 		obj = obj.assocs.get(image.names.add(name)).value;
@@ -133,7 +133,7 @@ public class DefinitionParser {
 			rd.next();
 			name = SelfishLexer.readName(rd);
 			if (name == null) throw new ParseException("Expected name", rd);
-			assoc = obj.lookup(image.names.add(name));
+			assoc = obj.lookup(image.names.add(name), false);
 			if (assoc == null) throw new ParseException("Object not found: " + name, rd);
 			obj = obj.assocs.get(image.names.add(name)).value;
 		}

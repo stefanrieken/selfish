@@ -19,13 +19,15 @@ public class SelfishObject {
 		return new SelfishObject(type, value);
 	}
 
-	public Association lookup(int number) {
-		Association assoc = assocs.get(Math.abs(number));
-		if (assocs != null) return assoc;
+	public Association lookup(int number, boolean recursive) {
+		Association assoc = assocs.get(number);
+		if (assoc == null && number > 0) assoc = assocs.get(-number);
+		if (assoc != null) return assoc;
+		if (!recursive) return null;
 
 		for (Map.Entry<Integer,Association> entry : assocs.entrySet()) {
 			if (entry.getKey() < 0) {
-				assoc = entry.getValue().value.lookup(number);
+				assoc = entry.getValue().value.lookup(number, true);
 				if (assoc != null) return assoc;
 			}
 		}

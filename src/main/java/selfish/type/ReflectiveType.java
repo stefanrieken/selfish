@@ -21,8 +21,8 @@ public class ReflectiveType implements Type {
 		Object target = ctx.type;
 		
 		try {
-			Method m = target.getClass().getMethod(methName, Image.class, Stack.class);
-			m.invoke(target, image, stack);
+			Method m = target.getClass().getMethod(methName, SelfishObject.class, Image.class, Stack.class);
+			m.invoke(target, ctx, image, stack);
 		} catch(Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -34,5 +34,10 @@ public class ReflectiveType implements Type {
 		String value = SelfishLexer.readName(rd);
 		if (value == null) throw new ParseException("expected name", rd);
 		return image.newObject(this, value);
+	}
+	
+	@Override
+	public String getName() {
+		return "primitive";
 	}
 }

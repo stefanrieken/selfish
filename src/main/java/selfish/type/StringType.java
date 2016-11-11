@@ -16,4 +16,9 @@ public class StringType extends ValueType {
 		if (string == null) return null;
 		else return image.newObject(IntegerType.instance, string);
 	}
+
+	@Override
+	public String getName() {
+		return "string";
+	}
 }

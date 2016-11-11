@@ -25,11 +25,11 @@ public class BlockType implements Type {
 			if (number == 0) {
 				/* TODO reset stack */
 			} else if (number > 0) {
-				newCtx = instance.lookup(number);
+				newCtx = instance.lookup(number, true);
 				stack.push(newCtx.value);
 			} else { // number < 0
 				// TODO allow methods to live at assoc.attributes (= newCtx)
-				Association newMeth = instance.lookup(number);
+				Association newMeth = newCtx.value.lookup(Math.abs(number), true);
 				newMeth.value.type.invoke(image, newMeth, stack);
 			}
 		}
@@ -41,7 +41,9 @@ public class BlockType implements Type {
 		for(Map.Entry<Integer,Association> entry : meth.assocs.entrySet()) {
 			instance.assocs.put(entry.getKey(), new Association(entry.getValue().attr, entry.getValue().value));
 		}
-		instance.assocs.put(image.names.add("self"), new Association(null, ctx));
+		// TODO quick fix: delete earlier positive version. This should be done on a higher level!
+		instance.assocs.remove(image.names.add("self"));
+		instance.assocs.put(-image.names.add("self"), new Association(null, ctx));
 		return instance;
 	}
 
@@ -55,7 +57,12 @@ public class BlockType implements Type {
 		ExpressionParser.parseCode(rd, blockCode, image, codeBlock);
 
 		if (!rd.readNonWs('}')) throw new ParseException("Expected '}'", rd);
-	
+
 		return codeBlock;
+	}
+
+	@Override
+	public String getName() {
+		return "code";
 	}
 }

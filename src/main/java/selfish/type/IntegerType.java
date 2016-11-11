@@ -16,4 +16,18 @@ public class IntegerType extends ValueType {
 		if (number == null) return null;
 		else return image.newObject(IntegerType.instance, number);
 	}
+	
+	//
+	// Reflective methods from here
+	//
+	public void int_add(SelfishObject ctx, Image image, Stack<SelfishObject> stack) {
+		int lhs = (Integer) ctx.value;
+		int rhs = (Integer) stack.pop().value;
+		stack.push(image.newObject(this, lhs + rhs));
+	}
+	
+	@Override
+	public String getName() {
+		return "int";
+	}
 }

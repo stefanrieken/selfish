@@ -1,2 +1,2 @@
-bla : { 42 };
+bla : { 41 + 1 };
 self.bla

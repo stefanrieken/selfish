@@ -12,4 +12,6 @@ public interface Type {
 	public SelfishObject parse(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current);
 
 	public void invoke(Image image, Association meth, Stack<SelfishObject> stack);
+	
+	public String getName();
 }

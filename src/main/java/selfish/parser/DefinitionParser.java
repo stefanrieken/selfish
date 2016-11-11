@@ -5,6 +5,7 @@ import java.util.Stack;
 import selfish.Association;
 import selfish.Image;
 import selfish.SelfishObject;
+import selfish.type.BlockType;
 
 public class DefinitionParser {
 
@@ -46,7 +47,7 @@ public class DefinitionParser {
 		if (rd.peekNonWs() != '@') return null;
 		rd.next();
 		SelfishObject result = parseSingleAttribute(rd, code, image, current);
-		if (result == null) result = LiteralParser.parseBlock(rd, code, image, current);
+		if (result == null) result = BlockType.instance.parse(rd, code, image, current);
 		
 		if (result == null) throw new ParseException("Expected attribute value", rd);
 		return result;

@@ -1,0 +1,43 @@
+selfish :
+{
+	object :
+	{
+		toString : "an object";
+	};
+
+	assoc :
+	{
+		.parent : object;
+
+		=  : { ctx.set };
+		+= : { @arg lhs; @arg rhs; rhs lhs .+ lhs ctx.set  };
+		-= : { @arg lhs; @arg rhs; rhs lhs .- lhs ctx.set  };
+		*= : { @arg lhs; @arg rhs; rhs lhs .* lhs ctx.set  };
+		/= : { @arg lhs; @arg rhs; rhs lhs ./ lhs ctx.set  };
+		%= : { @arg lhs; @arg rhs; rhs lhs .% lhs ctx.set  };
+
+		toString : "an assoc";
+	};
+
+	int :
+	{
+		.parent : object;
+
+		+ : #int_add;
+		- : #int_sub;
+		* : #int_mul;
+		/ : #int_div;
+		% : #int_mod;
+		toString : #int_toString;
+	};
+
+	string :
+	{
+		.parent : object;
+
+		+ : #string_add;
+		print : #string_print;
+		toString : self;
+	};
+
+};

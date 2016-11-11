@@ -6,6 +6,9 @@ import java.util.Stack;
 import selfish.Association;
 import selfish.Image;
 import selfish.SelfishObject;
+import selfish.parser.ExpressionParser;
+import selfish.parser.ParseException;
+import selfish.parser.SelfishReader;
 
 public class BlockType implements Type {
 
@@ -40,5 +43,19 @@ public class BlockType implements Type {
 		}
 		instance.assocs.put(image.names.add("self"), new Association(null, ctx));
 		return instance;
+	}
+
+	@Override
+	public SelfishObject parse(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
+		if (rd.peek() != '{') return null;
+		rd.next();
+		
+		Stack<Integer> blockCode = new Stack<>();
+		SelfishObject codeBlock = image.newObject(BlockType.instance, blockCode);
+		ExpressionParser.parseCode(rd, blockCode, image, codeBlock);
+
+		if (!rd.readNonWs('}')) throw new ParseException("Expected '}'", rd);
+	
+		return codeBlock;
 	}
 }

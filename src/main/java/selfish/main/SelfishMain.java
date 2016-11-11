@@ -2,6 +2,8 @@ package selfish.main;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Stack;
 
 import selfish.Association;
@@ -23,25 +25,32 @@ public class SelfishMain {
 	}
 	
 	public static Image load(String filename) {
+		Image image = new Image();
+		image.names.add("self"); // set at #1
+
+		SelfishObject root = image.newObject(BlockType.instance, new Stack<Integer>());
+
 		try {
-			SelfishReader rd = new SelfishReader(new FileReader(filename));
-
-			Stack<Integer> code = new Stack<>();
-			Image image = new Image();
-
-			image.names.add("self"); // set at #1
-
-			SelfishObject root = image.newObject(BlockType.instance,code);
-			image.objects.add(root);
-			ExpressionParser.parseCode(rd, code, image, root);
-			
-			rd.close();
-		return image;
+			parse(image, new InputStreamReader(SelfishMain.class.getResourceAsStream("/lib/base.selfish")));
+			parse(image, new FileReader(filename));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
+
+		return image;
 	}
-	
+
+	public static void parse(Image image, Reader reader) {
+			SelfishReader rd = new SelfishReader(reader);
+
+			SelfishObject root = image.objects.get(0);
+			Stack<Integer> code = (Stack<Integer>) root.value;
+			code.clear(); // overwrite any main() code that is in library
+
+			ExpressionParser.parseCode(rd, code, image, root);
+			rd.close();
+	}
+
 	public static int execute(Image image) {
 		Stack<SelfishObject> stack = new Stack<>();
 

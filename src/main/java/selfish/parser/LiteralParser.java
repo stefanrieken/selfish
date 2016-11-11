@@ -6,40 +6,26 @@ import selfish.Image;
 import selfish.SelfishObject;
 import selfish.type.BlockType;
 import selfish.type.IntegerType;
+import selfish.type.ReflectiveType;
+import selfish.type.StringType;
+import selfish.type.Type;
 
 /* Parses and returns object literals. Does not add to the current object */
 public class LiteralParser {
-	
+
+	static Type[] literalTypes = new Type[] {
+			BlockType.instance,
+			IntegerType.instance,
+			StringType.instance,
+			ReflectiveType.instance
+	};
+
 	public static SelfishObject parseLiteral(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		SelfishObject obj = parseBlock(rd, code, image, current);
-		if (obj == null) obj = parseNumber(rd, code, image, current);
-		if (obj == null) obj = parseString(rd, code, image, current);
-		return obj;
-	}
-	
-	public static SelfishObject parseBlock(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		if (rd.peek() != '{') return null;
-		rd.next();
+		for (Type type : literalTypes) {
+			SelfishObject obj = type.parse(rd, code, image, current);
+			if (obj != null) return obj;
+		}
 		
-		Stack<Integer> blockCode = new Stack<>();
-		SelfishObject codeBlock = image.newObject(BlockType.instance, blockCode);
-		ExpressionParser.parseCode(rd, blockCode, image, codeBlock);
-
-		if (!rd.readNonWs('}')) throw new ParseException("Expected '}'", rd);
-	
-		return codeBlock;
+		return null;
 	}
-	
-	public static SelfishObject parseNumber(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		Integer number = SelfishLexer.readNumber(rd);
-		if (number == null) return null;
-		else return image.newObject(IntegerType.instance, number);
-	}
-
-	public static SelfishObject parseString(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		String string = SelfishLexer.readString(rd);
-		if (string == null) return null;
-		else return image.newObject(IntegerType.instance, string);
-	}
-
 }

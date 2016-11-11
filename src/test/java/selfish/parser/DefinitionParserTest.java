@@ -43,6 +43,17 @@ public class DefinitionParserTest {
 	}
 
 	@Test
+	public void testParseLinkReference2() {
+		Stack<Integer> code = new Stack<Integer>();
+		Image image = new Image();
+		SelfishObject current = image.newObject(null, null);
+		SelfishObject other = image.newObject(StringType.instance, "relative");
+		current.assocs.put(image.names.add("bla"), new Association(null, other));
+		SelfishObject result = DefinitionParser.parseLinkReference(makeReader("bla"), code, image, current);
+		assertEquals("relative", result.toString());
+	}
+
+	@Test
 	public void testParseDefinition() {
 		Stack<Integer> code = new Stack<Integer>();
 		Image image = new Image();

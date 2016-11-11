@@ -29,7 +29,7 @@ arglist		: '(' expressionlist ')' ;
 mention		: (attr)? (namedDef|literal) {arglist}? arglist ; /* arglist == implicit 'self'-based execution */
 namedDef	: ('.')? (NAME|BNAME) ( staticDef )? ; /* allow dot-based context definition at start of expressionList : ".bla : {}" */
 staticDef	: ':' linkReference | literal;
-linkReference	: ( '/' (NAME|BNAME) )+ ;
+linkReference	: '/'? (NAME|BNAME) ( '/' (NAME|BNAME) )* ;
 attr		: '@' ( ((NAME|BNAME) {staticDef}? staticDef) | block ); /* unsure why Antlr thinks staticDef is ambiguous here. Also: note that in practice 'block' may only hold static definitions */
 
 

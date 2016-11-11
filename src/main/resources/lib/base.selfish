@@ -1,14 +1,7 @@
 selfish :
 {
-	object :
-	{
-		toString : "an object";
-	};
-
 	assoc :
 	{
-		.parent : object;
-
 		=  : { ctx.set };
 		+= : { @arg lhs; @arg rhs; rhs lhs .+ lhs ctx.set  };
 		-= : { @arg lhs; @arg rhs; rhs lhs .- lhs ctx.set  };
@@ -21,8 +14,6 @@ selfish :
 
 	int :
 	{
-		.parent : object;
-
 		+ : #int_add;
 		- : #int_sub;
 		* : #int_mul;
@@ -33,11 +24,9 @@ selfish :
 
 	string :
 	{
-		.parent : object;
-
 		+ : #string_add;
 		print : #string_print;
-		toString : self;
+		toString : { self };
 	};
 
 };

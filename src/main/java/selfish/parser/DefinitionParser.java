@@ -113,23 +113,31 @@ public class DefinitionParser {
 	}
 
 	public static SelfishObject parseLinkReference(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current) {
-		if (rd.peekNonWs() != '/') return null;
-		rd.next();
-		SelfishObject obj = image.objects.get(0);
+		SelfishObject obj = null;
+		if (rd.peekNonWs() == '/') {
+			rd.next();
+			obj = image.objects.get(0);
+		}
 
 		String name = SelfishLexer.readName(rd);
 		if (name == null) name = SelfishLexer.readBinaryName(rd);
 		if (name == null) return obj;
 
-		obj = obj.assocs.get(name).value;
+		if (obj == null) obj = current;
+		Association assoc = obj.lookup(image.names.add(name));
+		if (assoc == null)
+			throw new ParseException("Object not found: " + name, rd);
+		obj = obj.assocs.get(image.names.add(name)).value;
 		
 		while (rd.peek() == '/') {
 			rd.next();
 			name = SelfishLexer.readName(rd);
 			if (name == null) throw new ParseException("Expected name", rd);
-			obj = obj.assocs.get(name).value;
+			assoc = obj.lookup(image.names.add(name));
+			if (assoc == null) throw new ParseException("Object not found: " + name, rd);
+			obj = obj.assocs.get(image.names.add(name)).value;
 		}
-		
+
 		return obj;
 	}
 }

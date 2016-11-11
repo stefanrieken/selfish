@@ -11,12 +11,11 @@ public class BlockType implements Type {
 
 	public static BlockType instance = new BlockType();
 
-	public void invoke(Image image, Association meth, Association ctx, Stack<SelfishObject> stack) {
+	public void invoke(Image image, Association meth, Stack<SelfishObject> stack) {
 		// TODO wire closures during instantiation
 		// TODO take args, return returns (uh, at compile time!)
-		// TODO allow methods to live at assoc.attributes
 		
-		SelfishObject instance = instantiate(image, meth.value, ctx.value);
+		SelfishObject instance = instantiate(image, meth.value, stack.pop());
 		Association newCtx = null;
 
 		for (int number : (Stack<Integer>) instance.value) {
@@ -26,9 +25,9 @@ public class BlockType implements Type {
 				newCtx = instance.lookup(number);
 				stack.push(newCtx.value);
 			} else { // number < 0
-				stack.pop(); // don't need ctx double mentioned
+				// TODO allow methods to live at assoc.attributes (= newCtx)
 				Association newMeth = instance.lookup(number);
-				newMeth.value.type.invoke(image, newMeth, newCtx, stack);
+				newMeth.value.type.invoke(image, newMeth, stack);
 			}
 		}
 		

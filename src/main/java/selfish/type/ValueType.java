@@ -9,7 +9,7 @@ import selfish.SelfishObject;
 public abstract class ValueType implements Type {
 
 	@Override
-	public void invoke(Image image, Association meth, Association ctx, Stack<SelfishObject> stack) {
+	public void invoke(Image image, Association meth, Stack<SelfishObject> stack) {
 		// values don't do nuthin', it's a security thang
 	}
 

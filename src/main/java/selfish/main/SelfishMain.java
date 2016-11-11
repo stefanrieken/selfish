@@ -46,8 +46,9 @@ public class SelfishMain {
 		Stack<SelfishObject> stack = new Stack<>();
 
 		SelfishObject root = image.objects.get(0);
-		Association ctx = new Association(null, root);
-		root.type.invoke(image, ctx, ctx, stack);
+		Association meth = new Association(null, root);
+		stack.push(root);
+		root.type.invoke(image, meth, stack);
 		
 		if (!stack.isEmpty() && stack.peek().type == IntegerType.instance) {
 			return (Integer) stack.peek().value;

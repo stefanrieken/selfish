@@ -8,5 +8,5 @@ import selfish.SelfishObject;
 
 public interface Type {
 
-	public void invoke(Image image, Association meth, Association ctx, Stack<SelfishObject> stack);
+	public void invoke(Image image, Association meth, Stack<SelfishObject> stack);
 }

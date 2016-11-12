@@ -2,6 +2,7 @@ package selfish.type;
 
 import java.util.Stack;
 
+import selfish.Association;
 import selfish.Image;
 import selfish.SelfishObject;
 import selfish.parser.SelfishLexer;
@@ -17,17 +18,17 @@ public class IntegerType extends ValueType {
 		else return image.newObject(IntegerType.instance, number);
 	}
 	
-	//
-	// Reflective methods from here
-	//
-	public void int_add(SelfishObject ctx, Image image, Stack<SelfishObject> stack) {
-		int lhs = (Integer) ctx.value;
-		int rhs = (Integer) stack.pop().value;
-		stack.push(image.newObject(this, lhs + rhs));
-	}
-	
 	@Override
 	public String getName() {
 		return "int";
+	}
+
+	//
+	// Reflective methods from here
+	//
+	public void int_add(Association ctx, Image image, Stack<SelfishObject> stack) {
+		int lhs = (Integer) ctx.value.value;
+		int rhs = (Integer) stack.pop().value;
+		stack.push(image.newObject(this, lhs + rhs));
 	}
 }

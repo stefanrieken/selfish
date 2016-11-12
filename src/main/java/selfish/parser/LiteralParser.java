@@ -32,8 +32,9 @@ public class LiteralParser {
 	
 	public static SelfishObject decorate(Image image, SelfishObject obj) {
 		SelfishObject parent = findObject(image, "selfish", obj.type.getName());
+		SelfishObject assocParent = findObject(image, "selfish", "association");
 		if (parent != null)
-			obj.assocs.put(-image.names.add("parent"), new Association(null, parent));
+			obj.assocs.put(-image.names.add("parent"), new Association(null, assocParent, parent));
 		
 		return obj;
 	}

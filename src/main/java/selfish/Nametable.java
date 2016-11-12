@@ -16,6 +16,10 @@ public class Nametable {
 		names.add(name);
 		return names.size()-1;
 	}
+	
+	public String lookup(int number) {
+		return names.get(number);
+	}
 
 	public String toString() {
 		return names.toString();

@@ -22,7 +22,7 @@ public class DefinitionParser {
 			SelfishObject value = LiteralParser.parseLiteral(rd, code, image, current);
 			if (value != null) {
 				int number = image.names.add("");
-				assoc = new Association(attr, value);
+				assoc = new Association(attr, getAssocParent(image), value);
 				current.assocs.put(number, assoc);
 				code.add(number);
 			}
@@ -58,8 +58,13 @@ public class DefinitionParser {
 		if (name == null) return null;
 		SelfishObject value = DefinitionParser.parseStaticDef(rd, code, image, current);
 		SelfishObject attr = image.newObject(null, null);
-		attr.assocs.put(image.names.add(name), new Association(null, value));
+		if (value == null) value = LiteralParser.findObject(image, "selfish", "null");
+		attr.assocs.put(image.names.add(name), new Association(null, getAssocParent(image), value));
 		return attr;
+	}
+
+	public static SelfishObject getAssocParent(Image image) {
+		return LiteralParser.findObject(image, "selfish", "association");
 	}
 
 	/* affects current, code */
@@ -87,12 +92,12 @@ public class DefinitionParser {
 		SelfishObject value = parseStaticDef(rd, code, image, current);
 
 		if (value != null || attr != null) {
-			assoc = new Association(attr, value);
+			assoc = new Association(attr, getAssocParent(image), value);
 			current.assocs.put(sign * number, assoc);
 		} else { // neither value nor attr known, so could be new, could be reference
 			assoc = current.lookup(number, false);
 			if (assoc == null) {
-				assoc = new Association(null, null);
+				assoc = new Association(null, getAssocParent(image), LiteralParser.findObject(image, "selfish", "null"));
 				current.assocs.put(sign * number, assoc);
 			}
 		}

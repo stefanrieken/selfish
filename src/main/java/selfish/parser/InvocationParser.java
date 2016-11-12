@@ -66,7 +66,7 @@ public class InvocationParser {
 	}
 
 	public static Stack<Integer> parsePrecedence(SelfishReader rd, Image image, SelfishObject current) {
-		if (rd.peek() != '(') return null;
+		if (rd.peekNonWs() != '(') return null;
 		rd.next();
 		Stack<Integer> result = new Stack<>();
 		ExpressionParser.parseExpressionList(rd, result, image, current);

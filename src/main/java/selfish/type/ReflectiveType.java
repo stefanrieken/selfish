@@ -10,18 +10,17 @@ import selfish.parser.ParseException;
 import selfish.parser.SelfishLexer;
 import selfish.parser.SelfishReader;
 
-public class ReflectiveType implements Type {
+public class ReflectiveType extends Type {
 
 	public static ReflectiveType instance = new ReflectiveType();
 
-	public void invoke(Image image, Association meth, Stack<SelfishObject> stack) {
+	public void invoke(Image image, Association meth, Association ctx, Stack<SelfishObject> stack) {
 		String methName = (String) meth.value.value;
 		
-		SelfishObject ctx = stack.pop();
-		Object target = ctx.type;
+		Object target = ctx.value.type;
 		
 		try {
-			Method m = target.getClass().getMethod(methName, SelfishObject.class, Image.class, Stack.class);
+			Method m = target.getClass().getMethod(methName, Association.class, Image.class, Stack.class);
 			m.invoke(target, ctx, image, stack);
 		} catch(Exception e) {
 			throw new RuntimeException(e);

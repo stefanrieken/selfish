@@ -7,11 +7,18 @@ import selfish.Image;
 import selfish.SelfishObject;
 import selfish.parser.SelfishReader;
 
-public interface Type {
+public abstract class Type {
 
-	public SelfishObject parse(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current);
+	public abstract SelfishObject parse(SelfishReader rd, Stack<Integer> code, Image image, SelfishObject current);
 
-	public void invoke(Image image, Association meth, Stack<SelfishObject> stack);
+	public abstract void invoke(Image image, Association meth, Association ctx, Stack<SelfishObject> stack);
 	
-	public String getName();
+	public abstract String getName();
+
+	//
+	// Reflective methods from here
+	//
+	public void assoc_set(Association ctx, Image image, Stack<SelfishObject> stack) {
+		ctx.value = stack.pop();
+	}
 }

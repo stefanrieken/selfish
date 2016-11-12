@@ -1,13 +1,16 @@
 selfish :
 {
-	assoc :
+	null : {
+	};
+
+	association :
 	{
-		=  : { ctx.set };
-		+= : { @arg lhs; @arg rhs; rhs lhs .+ lhs ctx.set  };
-		-= : { @arg lhs; @arg rhs; rhs lhs .- lhs ctx.set  };
-		*= : { @arg lhs; @arg rhs; rhs lhs .* lhs ctx.set  };
-		/= : { @arg lhs; @arg rhs; rhs lhs ./ lhs ctx.set  };
-		%= : { @arg lhs; @arg rhs; rhs lhs .% lhs ctx.set  };
+		=  : #assoc_set;
+		+= : { @arg lhs; @arg rhs; rhs lhs .+ lhs .=  };
+		-= : { @arg lhs; @arg rhs; rhs lhs .- lhs .=  };
+		*= : { @arg lhs; @arg rhs; rhs lhs .* lhs .=  };
+		/= : { @arg lhs; @arg rhs; rhs lhs ./ lhs .=  };
+		%= : { @arg lhs; @arg rhs; rhs lhs .% lhs .=  };
 
 		toString : "an assoc";
 	};

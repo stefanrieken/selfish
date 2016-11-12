@@ -48,7 +48,7 @@ public class DefinitionParserTest {
 		Image image = new Image();
 		SelfishObject current = image.newObject(null, null);
 		SelfishObject other = image.newObject(StringType.instance, "relative");
-		current.assocs.put(image.names.add("bla"), new Association(null, other));
+		current.assocs.put(image.names.add("bla"), new Association(null, null, other));
 		SelfishObject result = DefinitionParser.parseLinkReference(makeReader("bla"), code, image, current);
 		assertEquals("relative", result.toString());
 	}
